@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('WebKit-only tests', () => {
-  test.skip(({ browserName }) => browserName !== 'webkit', 'WebKit only!');
 
   test('Safari-specific viewport test', async ({ page }) => {
     await page.goto('https://example.com');

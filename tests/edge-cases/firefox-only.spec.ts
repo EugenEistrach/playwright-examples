@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Firefox-only tests', () => {
-  test.skip(({ browserName }) => browserName !== 'firefox', 'Firefox only!');
 
   test('Firefox-specific privacy test', async ({ page }) => {
     await page.goto('https://example.com');

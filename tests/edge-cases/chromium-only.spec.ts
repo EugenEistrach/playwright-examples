@@ -1,7 +1,6 @@
 import { test, expect, chromium } from '@playwright/test';
 
 test.describe('Chromium-only tests', () => {
-  test.skip(({ browserName }) => browserName !== 'chromium', 'Chromium only!');
 
   test('Chrome DevTools Protocol test', async ({ page }) => {
     const client = await page.context().newCDPSession(page);
