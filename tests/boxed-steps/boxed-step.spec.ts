@@ -1,53 +1,42 @@
 import { test, expect, Page } from '@playwright/test';
 
-// various test scenarios for adding items to the cart
-// comment out the line before the `addAndViewCart` function in one of the tests 
-// Then run the test to see how box steps hide the implementation details of the step
-
-// reusable function to add an item to the cart and view the cart
-// we wrap our actions in a test step and set box to true
-async function addAndViewCart(page: Page){
-  await test.step('add and view cart', async () => {
-    await page.getByRole('button', { name: 'Add To Bag' }).click();
-    await page.getByLabel('cart').click();
-  }, { box: true }); // box: true will hide the implementation details of the step
+// boxed step example for todo operations
+async function addTodo(page: Page, text: string) {
+  await test.step('add todo item', async () => {
+    await page.getByPlaceholder('What needs to be done?').fill(text);
+    await page.getByPlaceholder('What needs to be done?').press('Enter');
+  }, { box: true });
 }
 
-test.describe('add to cart scenarios', () => {
+test.describe('todo app scenarios', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('https://cloudtesting.contosotraders.com/')
+    await page.goto('https://demo.playwright.dev/todomvc/')
   });
 
-  test('add to cart from carousel', async ({ page }) => {
-    await page.getByRole('button', { name: 'Buy Now' }).click();
-    await addAndViewCart(page);
-    await expect(page.getByText('Xbox Wireless Controller Lunar Shift Special Edition')).toBeVisible();
+  test('add todo item', async ({ page }) => {
+    await addTodo(page, 'Buy groceries');
+    await expect(page.getByText('Buy groceries')).toBeVisible();
   });
 
-  test('add to cart from search', async ({ page }) => {
-    const product = 'Xbox Wireless Controller Mineral Camo Special Edition'
-    const placeholder = page.getByPlaceholder('Search by product name or search by image')
-    await placeholder.click();
-    await placeholder.fill('xbox');
-    await placeholder.press('Enter');
-    await page.getByRole('img', { name: product }).click();
-    await addAndViewCart(page);
-    await expect(page.getByText(product)).toBeVisible();
+  test('add multiple todos', async ({ page }) => {
+    await addTodo(page, 'Walk the dog');
+    await addTodo(page, 'Write code');
+    await expect(page.getByText('Walk the dog')).toBeVisible();
+    await expect(page.getByText('Write code')).toBeVisible();
   });
 
-  test('add to cart from all products page', async ({ page }) => {
-    const product = 'Xbox Wireless Controller Lunar Shift Special Edition'
-    await page.getByRole('link', { name: 'All Products' }).first().click();
-    await page.getByRole('img', { name: product }).click();
-    await addAndViewCart(page);
-    await expect(page.getByText(product)).toBeVisible();
+  test('complete todo item', async ({ page }) => {
+    await addTodo(page, 'Read a book');
+    await page.getByLabel('Toggle Todo').check();
+    await expect(page.locator('li').filter({ hasText: 'Read a book' })).toHaveClass(/completed/);
   });
 
-  test('add to cart from laptops page', async ({ page }) => {
-    const product = 'Microsoft Surface Pro X 1876 13 Inches Laptop'
-    await page.getByRole('link', { name: 'Laptops' }).first().click();
-    await page.getByRole('img', { name:  product}).click();
-    await addAndViewCart(page);
-    await expect(page.getByText(product)).toBeVisible();
+  test('clear completed todos', async ({ page }) => {
+    await addTodo(page, 'First task');
+    await addTodo(page, 'Second task');
+    await page.getByLabel('Toggle Todo').first().check();
+    await page.getByRole('button', { name: 'Clear completed' }).click();
+    await expect(page.getByText('First task')).not.toBeVisible();
+    await expect(page.getByText('Second task')).toBeVisible();
   });
 });

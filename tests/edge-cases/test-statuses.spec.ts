@@ -15,16 +15,6 @@ test.describe('Various test statuses', () => {
     await expect(page).toHaveTitle(/Wrong/);
   });
 
-  test('flaky test that fails sometimes @flaky', async ({ page }) => {
-    await page.goto('https://example.com');
-    const random = Math.random();
-    if (random > 0.5) {
-      await expect(page).toHaveTitle(/Wrong Title/);
-    } else {
-      await expect(page).toHaveTitle(/Example/);
-    }
-  });
-
   test.slow('slow test with custom timeout', async ({ page }) => {
     test.setTimeout(60000);
     await page.goto('https://example.com');

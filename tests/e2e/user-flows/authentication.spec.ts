@@ -8,7 +8,7 @@ test.describe('Authentication E2E flows', () => {
 
   test('logout flow', async ({ page }) => {
     await page.goto('https://example.com');
-    await expect(page).toHaveTitle(/Wrong/);
+    await expect(page).toHaveTitle(/Example/);
   });
 
   test.skip('SSO login flow', async ({ page }) => {

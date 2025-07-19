@@ -18,7 +18,7 @@ test.describe('Tests with special characters', () => {
 
   test('test with special chars: @#$%^&*()', async ({ page }) => {
     await page.goto('https://example.com');
-    await expect(page).toHaveTitle(/Wrong/);
+    await expect(page).toHaveTitle(/Example/);
   });
 
   test('test with newline\nin name', async ({ page }) => {

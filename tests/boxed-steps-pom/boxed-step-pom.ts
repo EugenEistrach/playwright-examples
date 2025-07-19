@@ -1,48 +1,36 @@
 import { test, expect, Page } from '@playwright/test';
 
-export class MainPage {
+export class TodoPage {
   constructor(private readonly page: Page) { }
   
   async goto() {
-    await this.page.goto('https://cloudtesting.contosotraders.com/');
+    await this.page.goto('https://demo.playwright.dev/todomvc/');
   }
 
-  // using the boxedStep decorator defined below
   @boxedStep
-  async searchForProduct(query: string) {
-    await this.page.getByPlaceholder('Search by product name or search by image').click();
-    await this.page.getByPlaceholder('Search by product name or search by image').fill(query);
-    await this.page.getByPlaceholder('Search by product name or search by image').press('Enter');
+  async addTodo(text: string) {
+    await this.page.getByPlaceholder('What needs to be done?').fill(text);
+    await this.page.getByPlaceholder('What needs to be done?').press('Enter');
   }
 
-  // using the boxedStep decorator defined below
   @boxedStep
-  async clickOnProductPage(link: string) {
-    await this.page.getByRole('link', { name: link }).first().click();
+  async toggleTodo(index: number) {
+    await this.page.getByLabel('Toggle Todo').nth(index).check();
   }
 
-  // using the boxedStep decorator defined below
   @boxedStep
-  async clickOnProductByImage(title: string) {
-    await this.page.getByRole('img', { name: title }).click();
+  async clearCompleted() {
+    await this.page.getByRole('button', { name: 'Clear completed' }).click();
   }
 
-  // using the boxedStep decorator defined below
   @boxedStep
-  async addToCart() {
-    await this.page.getByRole('button', { name: 'Add To Bag' }).click();
+  async expectTodoVisible(text: string) {
+    await expect(this.page.getByText(text)).toBeVisible();
   }
 
-  // using the boxedStep decorator defined below
   @boxedStep
-  async openCart() {
-    await this.page.getByLabel('cart').click();
-  }
-
-  // using the boxedStep decorator defined below
-  @boxedStep
-  async expectToBeInCart(title: string) {
-    await expect(this.page.getByText(title)).toBeVisible();
+  async expectTodoCompleted(text: string) {
+    await expect(this.page.locator('li').filter({ hasText: text })).toHaveClass(/completed/);
   }
 }
 

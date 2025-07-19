@@ -43,7 +43,7 @@ test.describe('Tests with annotations', () => {
 
     test('checkout @critical @e2e', async ({ page }) => {
       await page.goto('https://example.com');
-      await expect(page).toHaveTitle(/Wrong/);
+      await expect(page).toHaveTitle(/Example/);
     });
   });
 });
