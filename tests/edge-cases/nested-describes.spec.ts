@@ -8,7 +8,7 @@ test.describe('Level 1 - User Management', () => {
         await expect(page).toHaveTitle(/Example/);
       });
 
-      test('should fail login with wrong credentials', async ({ page }) => {
+      test('should fail login with wrong credentials [INTENTIONALLY FAILS]', async ({ page }) => {
         await page.goto('https://example.com');
         await expect(page).toHaveTitle(/Wrong Title/);
       });

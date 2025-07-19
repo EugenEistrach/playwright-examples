@@ -14,7 +14,7 @@ for (const browser of browsers) {
       await expect(page).toHaveTitle(/Example/);
     });
 
-    test('should navigate to about', async ({ page }) => {
+    test(`should navigate to about${browser === 'Firefox' ? ' [INTENTIONALLY FAILS]' : ''}`, async ({ page }) => {
       await page.goto('https://example.com');
       if (browser === 'Firefox') {
         await expect(page).toHaveTitle(/Wrong/);
@@ -34,7 +34,7 @@ for (const { name, width, height } of viewports) {
       await expect(page).toHaveTitle(/Example/);
     });
 
-    test('menu should adapt', async ({ page }) => {
+    test(`menu should adapt${name === 'Mobile' ? ' [INTENTIONALLY FAILS]' : ''}`, async ({ page }) => {
       await page.goto('https://example.com');
       if (name === 'Mobile') {
         await expect(page.locator('.hamburger-menu')).toBeVisible();
@@ -51,7 +51,7 @@ const testData = [
 ];
 
 testData.forEach(({ username, password, shouldPass }) => {
-  test(`login with ${username || 'empty'}/${password || 'empty'}`, async ({ page }) => {
+  test(`login with ${username || 'empty'}/${password || 'empty'}${!shouldPass ? ' [INTENTIONALLY FAILS]' : ''}`, async ({ page }) => {
     await page.goto('https://example.com');
     if (shouldPass) {
       await expect(page).toHaveTitle(/Example/);
