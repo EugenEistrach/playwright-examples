@@ -37,40 +37,4 @@ test.describe('Retry-aware flaky tests', () => {
     }
   });
 
-  test('smart flaky - fails initially but passes on manual rerun', async ({ page }, testInfo) => {
-    const maxRetries = testInfo.project.retries || 0;
-    
-    // Read a timestamp file to determine if this is a rerun
-    const fs = require('fs');
-    const path = require('path');
-    const timestampFile = path.join(__dirname, '.test-run-timestamp');
-    
-    let isRerun = false;
-    try {
-      if (fs.existsSync(timestampFile)) {
-        const lastRun = parseInt(fs.readFileSync(timestampFile, 'utf8'));
-        const now = Date.now();
-        // If the file exists and was written less than 5 minutes ago, consider it a rerun
-        if (now - lastRun < 5 * 60 * 1000) {
-          isRerun = true;
-        }
-      }
-      // Update timestamp
-      fs.writeFileSync(timestampFile, Date.now().toString());
-    } catch (e) {
-      console.log('Could not handle timestamp file:', e);
-    }
-    
-    console.log(`Is rerun: ${isRerun}, Max retries: ${maxRetries}`);
-    
-    await page.goto('https://example.com');
-    
-    // First run with retries: fail
-    // Manual rerun without retries: pass
-    if (!isRerun && maxRetries > 0) {
-      await expect(page).toHaveTitle(/Will Fail on First Run/);
-    } else {
-      await expect(page).toHaveTitle(/Example/);
-    }
-  });
 });
